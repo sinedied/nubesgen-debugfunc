@@ -53,43 +53,43 @@ jobs:
           -auto-approve \
           -var="environment=$ENVIRONMENT"
         working-directory: '${{ github.workspace }}/terraform'
-    build:
-      runs-on: ubuntu-20.04
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-        - name: Use Node.js ${{ env.NODEJS_VERSION }}
-          uses: actions/setup-node@v2
-          with:
-            node-version: ${{ env.NODEJS_VERSION }}
-        - name: Cache NPM packages
-          uses: actions/cache@v2
-          with:
-            path: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-node-
-        - name: Install NPM packages
-          run: npm ci
-        - name: Build the application
-          run: npm run build --if-present
-        - name: Run tests
-          run: npm test --if-present
-        - name: Package application
-          run: |
-            PKG_FILE=$(npm pack ${{ env.APP_PACKAGE_PATH }} | tail -n1)
-            tar -xvf $PKG_FILE
-            cd package
-            # package-lock.json must be added to the "files" entry of
-            # your package.json so it's included by `npm pack`
-            npm ci --production
-            zip -r package.zip *
-        - name: Temporarily save package
-          uses: actions/upload-artifact@v2
-          with:
-            name: package
-            path: './package'
-            retention-days: 1
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODEJS_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODEJS_VERSION }}
+      - name: Cache NPM packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install NPM packages
+        run: npm ci
+      - name: Build the application
+        run: npm run build --if-present
+      - name: Run tests
+        run: npm test --if-present
+      - name: Package application
+        run: |
+          PKG_FILE=$(npm pack ${{ env.APP_PACKAGE_PATH }} | tail -n1)
+          tar -xvf $PKG_FILE
+          cd package
+          # package-lock.json must be added to the "files" entry of
+          # your package.json so it's included by `npm pack`
+          npm ci --production
+          zip -r package.zip *
+      - name: Temporarily save package
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: './package'
+          retention-days: 1
   deploy:
     needs: [manage-infrastructure, build]
     runs-on: ubuntu-20.04
