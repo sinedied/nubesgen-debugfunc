@@ -83,8 +83,8 @@ jobs:
         run: |
           PKG_FILE=$(npm pack ${{ env.APP_PACKAGE_PATH }} | tail -n1)
           tar -xvf $PKG_FILE
+          cp -f ${{ env.APP_PACKAGE_PATH }}/package-lock.json package/
           cd package
-          cp -f ${{ env.APP_PACKAGE_PATH }}/package-lock.json .
           npm ci --production
           zip -r package.zip *
       - name: Temporarily save package
