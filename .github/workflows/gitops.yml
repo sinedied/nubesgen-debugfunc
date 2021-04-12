@@ -80,8 +80,7 @@ jobs:
           PKG_FILE=$(npm pack ${{ env.APP_PACKAGE_PATH }} | tail -n1)
           tar -xvf $PKG_FILE
           cd package
-          # package-lock.json must be added to the "files" entry of
-          # your package.json so it's included by `npm pack`
+          cp -f ${{ env.APP_PACKAGE_PATH }}/package-lock.json .
           npm ci --production
           zip -r package.zip *
       - name: Temporarily save package

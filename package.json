@@ -7,11 +7,5 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {},
-  "devDependencies": {},
-  "files": [
-    "package-lock.json",
-    "Hello",
-    "host.json",
-    "proxies.json"
-  ]
+  "devDependencies": {}
 }
